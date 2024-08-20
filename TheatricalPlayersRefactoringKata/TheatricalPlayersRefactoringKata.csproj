@@ -4,9 +4,4 @@
     <TargetFramework>net6.0</TargetFramework>
   </PropertyGroup>
 
-  <ItemGroup>
-    <Folder Include="DbContext\" />
-    <Folder Include="Controller\" />
-  </ItemGroup>
-
 </Project>

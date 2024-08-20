@@ -1,18 +1,31 @@
-namespace TheatricalPlayersRefactoringKata;
+using System;
 
-public class Play
+namespace TheatricalPlayersRefactoringKata
 {
-    private string _name;
-    private int _lines;
-    private string _type;
+    public enum PlayType
+    {
+        Tragedy,
+        Comedy,
+        Historical
+    }
 
-    public string Name { get => _name; set => _name = value; }
-    public int Lines { get => _lines; set => _lines = value; }
-    public string Type { get => _type; set => _type = value; }
+    public class Play
+    {
+        public string Name { get; }
+        private int _lines;
+        public int Lines
+        {
+            get => _lines;
+            private set => _lines = Math.Clamp(value, 1000, 4000);
+        }
+        public PlayType Type { get; }
 
-    public Play(string name, int lines, string type) {
-        this._name = name;
-        this._lines = lines;
-        this._type = type;
+        public Play(string name, int lines, PlayType type)
+        {
+            Name = name;
+            Lines = lines;  
+            Type = type;
+        }
     }
 }
+

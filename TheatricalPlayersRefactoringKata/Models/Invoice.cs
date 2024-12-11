@@ -3,7 +3,12 @@ using System.Collections.Generic;
 namespace TheatricalPlayersRefactoringKata.Models;
 public class Invoice
 {
-    private string Customer { get; set; }
-    private List<Performance> Performances { get; set; }
+    public string Customer { get; private set; }
+    public List<Performance> Performances { get; private set; }
 
+    public Invoice(string customer, List<Performance> performances)
+    {
+        Customer = customer;
+        Performances = performances ?? new List<Performance>();
+    }
 }

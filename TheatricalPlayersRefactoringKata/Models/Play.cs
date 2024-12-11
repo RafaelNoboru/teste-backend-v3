@@ -3,8 +3,14 @@ using TheatricalPlayersRefactoringKata.Enum;
 namespace TheatricalPlayersRefactoringKata.Models;
 public class Play
 {
-    private string Name { get; set; }
-    private int Lines { get; set; }
-    public Type Type { get; set; }
+    public string Name { get; private set; }
+    public int Lines { get; private set; }
+    public Type Type { get; private set; }
 
+    public Play(string name, int lines, Type type)
+    {
+        Name = name;
+        Lines = lines;
+        Type = type;
+    }
 }

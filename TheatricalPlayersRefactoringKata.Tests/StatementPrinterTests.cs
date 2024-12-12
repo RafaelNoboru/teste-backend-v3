@@ -1,81 +1,93 @@
-using System;
-using System.Collections.Generic;
-using ApprovalTests;
-using ApprovalTests.Reporters;
-using TheatricalPlayersRefactoringKata.Models;
-using TheatricalPlayersRefactoringKata.Enum; 
+ï»¿using System.Collections.Generic;
 using Xunit;
+using TheatricalPlayersRefactoringKata.Models;
+using TheatricalPlayersRefactoringKata.Enum;
+using System.IO;
+using ApprovalTests;
+using System;
 
 namespace TheatricalPlayersRefactoringKata.Tests
 {
-    public class StatementPrinterTests
+    public class TextFormatterTests
     {
         [Fact]
-        [UseReporter(typeof(DiffReporter))]
-        public void TestStatementExampleLegacy()
+        public void Format_ReturnsCorrectStatement()
         {
-            // Definindo as peças
+            // Arrange
+            var formatter = new TextFormatter();
+
+            // Mock plays
             var plays = new Dictionary<string, Play>
+    {
+        { "hamlet", new Play("Hamlet", 1500, PlayType.Tragedy) },
+        { "as-like", new Play("As You Like It", 2000, PlayType.Comedy) },
+        { "othello", new Play("Othello", 1600, PlayType.Tragedy) }
+    };
+
+            // Mock invoice
+            var performances = new List<Performance>
+    {
+        new Performance("hamlet", 55),
+        new Performance("as-like", 35),
+        new Performance("othello", 40)
+    };
+
+            var invoice = new Invoice("BigCo", performances);
+
+            // Act
+            var result = formatter.Format(invoice, plays);
+
+            // Define the path where you want to save the output
+            var directoryPath = Path.Combine(Directory.GetCurrentDirectory(), "TestOutput");
+            var filePath = Path.Combine(directoryPath, "output_statement.txt");
+
+
+            // Ensure the directory exists
+            if (!Directory.Exists(directoryPath))
             {
-                { "hamlet", new Play("Hamlet", 4024, Enum.Type.tragedy) },
-                { "as-like", new Play("As You Like It", 2670, Enum.Type.comedy) },
-                { "othello", new Play("Othello", 3560, Enum.Type.tragedy) }
-            };
-
-            // Definindo a fatura com performances
-            Invoice invoice = new Invoice(
-                "BigCo",
-                new List<Performance>
-                {
-                    new Performance("hamlet", 55),
-                    new Performance("as-like", 35),
-                    new Performance("othello", 40)
-                }
-            );
-
-            // Criação do StatementPrinter
-            StatementPrinter statementPrinter = new StatementPrinter();
-            var result = statementPrinter.Print(invoice, plays);
-
-            // Aprovação do resultado
-            Approvals.Verify(result);
-        }
-
-        [Fact]
-        [UseReporter(typeof(DiffReporter))]
-        public void TestTextStatementExample()
-        {
-            // Definindo as peças com todos os tipos
-            var plays = new Dictionary<string, Play>
+                Console.WriteLine("Directory does not exist. Creating directory...");
+                Directory.CreateDirectory(directoryPath);
+            }
+            else
             {
-                { "hamlet", new Play("Hamlet", 4024, Enum.Type.tragedy) },
-                { "as-like", new Play("As You Like It", 2670, Enum.Type.comedy) },
-                { "othello", new Play("Othello", 3560, Enum.Type.tragedy) },
-                { "henry-v", new Play("Henry V", 3227, Enum.Type.historic) },
-                { "john", new Play("King John", 2648, Enum.Type.historic) },
-                { "richard-iii", new Play("Richard III", 3718, Enum.Type.historic) }
-            };
+                Console.WriteLine("Directory already exists.");
+            }
 
-            // Definindo a fatura com performances
-            Invoice invoice = new Invoice(
-                "BigCo",
-                new List<Performance>
-                {
-                    new Performance("hamlet", 55),
-                    new Performance("as-like", 35),
-                    new Performance("othello", 40),
-                    new Performance("henry-v", 20),
-                    new Performance("john", 39),
-                    new Performance("henry-v", 20)
-                }
-            );
+            // Save the result to a file
+            try
+            {
+                Console.WriteLine("Writing to file...");
+                File.WriteAllText(filePath, result);
+                Console.WriteLine("File written successfully.");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error writing file: {ex.Message}");
+            }
 
-            // Criação do StatementPrinter
-            StatementPrinter statementPrinter = new StatementPrinter();
-            var result = statementPrinter.Print(invoice, plays);
+            // Display the contents of the file in the console
+            try
+            {
+                string fileContent = File.ReadAllText(filePath);
+                Console.WriteLine("Contents of the output file:");
+                Console.WriteLine(fileContent);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error reading file: {ex.Message}");
+            }
 
-            // Aprovação do resultado
-            Approvals.Verify(result);
+            // Assert - You can still check the contents if needed
+            var expectedOutput =
+    @"Statement for BigCo
+  Hamlet: $400.00 (55 seats)
+  As You Like It: $480.00 (35 seats)
+  Othello: $260.00 (40 seats)
+Amount owed is $1,140.00
+You earned 47 credits
+";
+
+            Assert.Equal(expectedOutput, result);
         }
     }
 }

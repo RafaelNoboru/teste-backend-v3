@@ -1,10 +1,16 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
 
     <IsPackable>false</IsPackable>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="TestOutput\**" />
+    <EmbeddedResource Remove="TestOutput\**" />
+    <None Remove="TestOutput\**" />
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="ApprovalTests" Version="5.7.2" />

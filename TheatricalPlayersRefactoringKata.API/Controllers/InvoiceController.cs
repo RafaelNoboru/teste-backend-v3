@@ -3,6 +3,9 @@ using TheatricalPlayersRefactoringKata.Enum;
 using TheatricalPlayersRefactoringKata.Interface;
 using TheatricalPlayersRefactoringKata.Models;
 
+/// <summary>
+/// Controller responsible for generating financial statements based on theatrical performance invoices.
+/// </summary>
 [ApiController]
 [Route("api/[controller]")]
 public class InvoiceController : ControllerBase
@@ -10,6 +13,10 @@ public class InvoiceController : ControllerBase
     private readonly IStatementFormatter _statementFormatter;
     private readonly Dictionary<string, Play> _plays;
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="InvoiceController"/> class with the specified statement formatter.
+    /// </summary>
+    /// <param name="statementFormatter">The formatter used to generate the financial statement.</param>
     public InvoiceController(IStatementFormatter statementFormatter)
     {
         _statementFormatter = statementFormatter;
@@ -21,6 +28,16 @@ public class InvoiceController : ControllerBase
         };
     }
 
+    /// <summary>
+    /// Generates a financial statement for the given invoice and saves it as a text file.
+    /// </summary>
+    /// <param name="invoice">The invoice containing performance details.</param>
+    /// <returns>
+    /// A response indicating the success or failure of the file generation process.
+    /// </returns>
+    /// <remarks>
+    /// The generated file is saved in a "Statements" directory within the application's root directory.
+    /// </remarks>
     [HttpPost]
     public IActionResult GenerateInvoice([FromBody] Invoice invoice)
     {

@@ -5,6 +5,8 @@ using TheatricalPlayersRefactoringKata.API.Database;
 using TheatricalPlayersRefactoringKata.Calculators;
 using TheatricalPlayersRefactoringKata.Interface;
 using TheatricalPlayersRefactoringKata.Models;
+using Microsoft.OpenApi.Models;
+using System.Reflection;
 
 namespace TheatricalPlayersRefactoringKata.API
 {
@@ -13,7 +15,8 @@ namespace TheatricalPlayersRefactoringKata.API
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
-
+            var xmlPath = Path.Combine(AppContext.BaseDirectory, "TheatricalPlayersRefactoringKata.API.xml");
+           
             // Add services to the container.
 
             // Add DbContext for Entity Framework
@@ -25,7 +28,20 @@ namespace TheatricalPlayersRefactoringKata.API
 
             // Add Swagger/OpenAPI for API documentation
             builder.Services.AddEndpointsApiExplorer();
-            builder.Services.AddSwaggerGen();
+            
+            builder.Services.AddSwaggerGen(options =>
+            {
+                var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+                var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+                options.IncludeXmlComments(xmlPath);
+
+                options.SwaggerDoc("v1", new OpenApiInfo
+                {
+                    Title = "Theatrical Players API",
+                    Version = "v1",
+                    Description = "API to generate statements for a theater company.",
+                });
+            });
 
             // Register GenreCalculators and StatementFormatter as services
             builder.Services.AddScoped<IStatementFormatter, TextFormatter>(); 
@@ -43,13 +59,8 @@ namespace TheatricalPlayersRefactoringKata.API
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
             {
-                
                 app.UseSwagger();
-                app.UseSwaggerUI(c =>
-                {
-                    c.SwaggerEndpoint("/swagger/v1/swagger.json", "Theatrical Company API"); 
-                    c.RoutePrefix = string.Empty; 
-                });
+                app.UseSwaggerUI();
             }
 
             app.UseHttpsRedirection();

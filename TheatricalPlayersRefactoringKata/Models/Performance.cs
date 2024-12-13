@@ -1,9 +1,14 @@
 using System;
+using System.Text.Json.Serialization;
 
 namespace TheatricalPlayersRefactoringKata.Models;
 public class Performance
 {
+
+    [JsonPropertyName("playId")]
     public string PlayId { get; set; }
+    
+    [JsonPropertyName("audience")]
     public int Audience { get; set; }
 
     public Performance(string playId, int audience)

@@ -38,8 +38,8 @@ namespace TheatricalPlayersRefactoringKata.Tests
             var result = formatter.Format(invoice, plays);
 
             // Define the path where you want to save the output
-            var directoryPath = Path.Combine(Directory.GetCurrentDirectory(), "TestOutput");
-            var filePath = Path.Combine(directoryPath, "output_statement.txt");
+            var directoryPath = Path.Combine(Directory.GetCurrentDirectory(), "Statements");
+            var filePath = Path.Combine(directoryPath, "statement.txt");
 
 
             // Ensure the directory exists
@@ -65,19 +65,7 @@ namespace TheatricalPlayersRefactoringKata.Tests
                 Console.WriteLine($"Error writing file: {ex.Message}");
             }
 
-            // Display the contents of the file in the console
-            try
-            {
-                string fileContent = File.ReadAllText(filePath);
-                Console.WriteLine("Contents of the output file:");
-                Console.WriteLine(fileContent);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Error reading file: {ex.Message}");
-            }
-
-            // Assert - You can still check the contents if needed
+            // Assert 
             var expectedOutput =
     @"Statement for BigCo
   Hamlet: $400.00 (55 seats)
